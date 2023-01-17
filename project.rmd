@@ -89,7 +89,7 @@ prs_algorithm <- function(f, cost = 1000L) {
     #' @return Returns function value
 
   if (!isSmoofFunction(f)) {
-    stop("Function is not a smoof function.")
+    stop("Function is not from smoof package.")
   }
 
   return(9)
@@ -133,7 +133,7 @@ ga_algorithm <- function(f, cost = 1000L) {
   #' @return Returns function value
 
   if (!isSmoofFunction(f)) {
-    stop("Function is not a smoof function.")
+    stop("Function is not from smoof package.")
   }
 
   result <- ga(type = "real-valued",
