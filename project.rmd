@@ -6,9 +6,8 @@ author:
 output: html_notebook
 ---
 
-[//]: # (PDF Render: output: pdf_document )
-
 ```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
+# PDF Render: output: pdf_document
 # Include libraries
 library(smoof)
 library(GA)
@@ -42,6 +41,39 @@ rastrigin_2D <- makeRastriginFunction(dimensions = 2L)
 rastrigin_10D <- makeRastriginFunction(dimensions = 10L)
 rastrigin_20D <- makeRastriginFunction(dimensions = 20L)
 ```
+
+## Stałe i funkcje pomocnicze
+
+W celu ułatwienia analizy oraz łatwej zmiany parametrów, w tej sekcji zostały zdefiniowane stałe oraz funkcje pomocnicze.
+```{r}
+# Define number of calculations for each algorithm
+number_of_calculations <- 50L
+
+loadData <- function(filename) {
+    #' Loads data from file
+    #'
+    #' @param filename Name of the file
+    #' @return Returns data from file, otherwise NULL if file does not exist
+
+  if (file.exists(filename)) {
+    return(readRDS(filename))
+  }else {
+    return(NULL)
+  }
+}
+
+saveData <- function(data, filename) {
+    #' Saves data to file
+    #'
+    #' @param data Data to save
+    #' @param filename Name of the file
+    #' @return Returns data parameter
+
+  saveRDS(data, filename)
+  return(data)
+}
+```
+
 ## Algorytm PRS (Pure Random Search)
 
 Opis algorytmu.
@@ -50,26 +82,37 @@ Opis algorytmu.
 
 ```{r}
 prs_algorithm <- function(f, cost = 1000L) {
-  # f - function to minimize
-  # cost - maximum number of iterations
-  # returns: minimum function value f(min)
+    #' Pure Random Search algorithm
+    #'
+    #' @param f Function to minimize (from spoof package)
+    #' @param cost Number of calculations
+    #' @return Returns function value
+
   return(9)
 }
 ```
-### Średni wynik algorytmu dla odpowiednich funkcji oraz wymiarów
+### Generacja danych
 
+Generowanie minimalnych wartości funkcji za pomocą algorytmu PRS oraz zapisanie ich do pliku rds.
 ```{r}
-number_of_calculations <- 50L
+prs_rosenbrock_2D <- loadData("./data/prs_rosenbrock_2D.rds")
+if (is.null(prs_rosenbrock_2D)) prs_rosenbrock_2D <- saveData(replicate(number_of_calculations, prs_algorithm(rosenbrock_2D)), "./data/prs_rosenbrock_2D.rds")
 
-prs_rosenbrock_2D <- replicate(number_of_calculations, prs_algorithm(rosenbrock_2D))
-prs_rosenbrock_10D <- replicate(number_of_calculations, prs_algorithm(rosenbrock_10D))
-prs_rosenbrock_20D <- replicate(number_of_calculations, prs_algorithm(rosenbrock_20D))
+prs_rosenbrock_10D <- loadData("./data/prs_rosenbrock_10D.rds")
+if (is.null(prs_rosenbrock_10D)) prs_rosenbrock_10D <- saveData(replicate(number_of_calculations, prs_algorithm(rosenbrock_10D)), "./data/prs_rosenbrock_10D.rds")
 
-prs_rastrigin_2D <- replicate(number_of_calculations, prs_algorithm(rastrigin_2D))
-prs_rastrigin_10D <- replicate(number_of_calculations, prs_algorithm(rastrigin_10D))
-prs_rastrigin_20D <- replicate(number_of_calculations, prs_algorithm(rastrigin_20D))
+prs_rosenbrock_20D <- loadData("./data/prs_rosenbrock_20D.rds")
+if (is.null(prs_rosenbrock_20D)) prs_rosenbrock_20D <- saveData(replicate(number_of_calculations, prs_algorithm(rosenbrock_20D)), "./data/prs_rosenbrock_20D.rds")
+
+prs_rastrigin_2D <- loadData("./data/prs_rastrigin_2D.rds")
+if (is.null(prs_rastrigin_2D)) prs_rastrigin_2D <- saveData(replicate(number_of_calculations, prs_algorithm(rastrigin_2D)), "./data/prs_rastrigin_2D.rds")
+
+prs_rastrigin_10D <- loadData("./data/prs_rastrigin_10D.rds")
+if (is.null(prs_rastrigin_10D)) prs_rastrigin_10D <- saveData(replicate(number_of_calculations, prs_algorithm(rastrigin_10D)), "./data/prs_rastrigin_10D.rds")
+
+prs_rastrigin_20D <- loadData("./data/prs_rastrigin_20D.rds")
+if (is.null(prs_rastrigin_20D)) prs_rastrigin_20D <- saveData(replicate(number_of_calculations, prs_algorithm(rastrigin_20D)), "./data/prs_rastrigin_20D.rds")
 ```
-
 ## Algorytm GA (Genetic Algorithm)
 
 Opis algorytmu.
@@ -78,32 +121,47 @@ Opis algorytmu.
 ### Implementacja
 
 ```{r}
-ga_algorithm <- function(f, cost = 1000){
-  # f - function to minimize
-  # returns: list with minimum value and its position
+ga_algorithm <- function(f, cost = 1000L) {
+  #' Genetic Algorithm
+  #'
+  #' @param f Function to minimize (from spoof package)
+  #' @param cost Number of calculations
+  #' @return Returns function value
+
   result <- ga(type = "real-valued",
-               fitness =  function(x) -f(x),
-               lower =  getLowerBoxConstraints(f), upper = getUpperBoxConstraints(f), maxiter = cost, run = cost)
+               fitness = function(x) -f(x),
+               lower = getLowerBoxConstraints(f), upper = getUpperBoxConstraints(f), maxiter = cost, run = cost)
 
   return(f(result@solution))
 }
 
 ```
 
-### Średni wynik algorytmu dla odpowiednich funkcji oraz wymiarów
+### Generacja danych
+
+Generowanie minimalnych wartości funkcji za pomocą algorytmu GA oraz zapisanie ich do pliku rds.
 
 ```{r}
-number_of_calculations <- 50L
+ga_rosenbrock_2D <- loadData("./data/ga_rosenbrock_2D.rds")
+if (is.null(ga_rosenbrock_2D))ga_rosenbrock_2D <- saveData(replicate(number_of_calculations, ga_algorithm(rosenbrock_2D)), "./data/ga_rosenbrock_2D.rds")
 
-ga_rosenbrock_2D <- replicate(number_of_calculations, ga_algorithm(rosenbrock_2D))
-ga_rosenbrock_10D <- replicate(number_of_calculations, ga_algorithm(rosenbrock_10D))
-ga_rosenbrock_20D <- replicate(number_of_calculations, ga_algorithm(rosenbrock_20D))
+ga_rosenbrock_10D <- loadData("./data/ga_rosenbrock_10D.rds")
+if (is.null(ga_rosenbrock_10D)) ga_rosenbrock_10D <- saveData(replicate(number_of_calculations, ga_algorithm(rosenbrock_10D)), "./data/ga_rosenbrock_10D.rds")
 
-ga_rastrigin_2D <- replicate(number_of_calculations, ga_algorithm(rastrigin_2D))
-ga_rastrigin_10D <- replicate(number_of_calculations, ga_algorithm(rastrigin_10D))
-ga_rastrigin_20D <- replicate(number_of_calculations, ga_algorithm(rastrigin_20D))
+ga_rosenbrock_20D <- loadData("./data/ga_rosenbrock_20D.rds")
+if (is.null(ga_rosenbrock_20D)) ga_rosenbrock_20D <- saveData(replicate(number_of_calculations, ga_algorithm(rosenbrock_20D)), "./data/ga_rosenbrock_20D.rds")
+
+ga_rastrigin_2D <- loadData("./data/ga_rastrigin_2D.rds")
+if (is.null(ga_rastrigin_2D)) ga_rastrigin_2D <- saveData(replicate(number_of_calculations, ga_algorithm(rastrigin_2D)), "./data/ga_rastrigin_2D.rds")
+
+ga_rastrigin_10D <- loadData("./data/ga_rastrigin_10D.rds")
+if (is.null(ga_rastrigin_10D)) ga_rastrigin_10D <- saveData(replicate(number_of_calculations, ga_algorithm(rastrigin_10D)), "./data/ga_rastrigin_10D.rds")
+
+ga_rastrigin_20D <- loadData("./data/ga_rastrigin_20D.rds")
+if (is.null(ga_rastrigin_20D)) ga_rastrigin_20D <- saveData(replicate(number_of_calculations, ga_algorithm(rastrigin_20D)), "./data/ga_rastrigin_20D.rds")
 ```
-## Analiza wyników pod kątem położenia i rozproszenia rozkładu
+## Porównanie średnich wyników algorytmów oraz ich analiza pod kątem położenia i rozproszenia rozkładu
+
 
 ### Funkcja Rosenbrocka
 
@@ -117,7 +175,7 @@ ga_rastrigin_20D <- replicate(number_of_calculations, ga_algorithm(rastrigin_20D
 #### Wymiar 10D
 #### Wymiar 20D
 
-## Analiza istotności statystycznej różnicy między średnim wynikiem
+## Analiza istotności statystycznej różnicy między wynikami algorytmów
 
 ### Funkcja Rosenbrocka
 
