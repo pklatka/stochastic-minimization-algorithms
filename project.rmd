@@ -8,6 +8,10 @@ output: html_notebook
 
 ```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
 # PDF Render: output: pdf_document
+
+# NOTE: Use code below if you can't load data files
+# setwd("/path/to/project/directory")
+
 # Include libraries
 library(smoof)
 library(GA)
