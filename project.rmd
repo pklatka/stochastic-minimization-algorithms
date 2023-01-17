@@ -88,6 +88,10 @@ prs_algorithm <- function(f, cost = 1000L) {
     #' @param cost Number of calculations
     #' @return Returns function value
 
+  if (!isSmoofFunction(f)) {
+    stop("Function is not a smoof function.")
+  }
+
   return(9)
 }
 ```
@@ -127,6 +131,10 @@ ga_algorithm <- function(f, cost = 1000L) {
   #' @param f Function to minimize (from spoof package)
   #' @param cost Number of calculations
   #' @return Returns function value
+
+  if (!isSmoofFunction(f)) {
+    stop("Function is not a smoof function.")
+  }
 
   result <- ga(type = "real-valued",
                fitness = function(x) -f(x),
