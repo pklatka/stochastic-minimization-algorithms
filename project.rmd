@@ -96,30 +96,49 @@ prs_algorithm <- function(f, cost = 1000L) {
     stop("Function is not from smoof package.")
   }
 
-  return(9)
+  # Generate points
+  domain_min <- getLowerBoxConstraints(f)
+  domain_max <- getUpperBoxConstraints(f)
+
+  points <- matrix(0, nrow = cost, ncol = length(domain_min))
+  for (i in seq_along(domain_min)){
+    uniform_distribution_points <- runif(cost, domain_min[i], domain_max[i])
+    for (j in seq_along(uniform_distribution_points)) {
+      points[j, i] <- uniform_distribution_points[j]
+    }
+  }
+
+  # Return minimum function value
+  return(min(apply(points, 1, f)))
 }
 ```
-### Generacja danych
+### Generacja danych oraz obliczenie średnich wyników algorytmu
 
-Generowanie minimalnych wartości funkcji za pomocą algorytmu PRS oraz zapisanie ich do pliku rds.
+Generowanie minimalnych wartości funkcji za pomocą algorytmu PRS, obliczenie średniej z wyników oraz zapisanie ich do pliku rds.
 ```{r}
 prs_rosenbrock_2D <- loadData("./data/prs_rosenbrock_2D.rds")
 if (is.null(prs_rosenbrock_2D)) prs_rosenbrock_2D <- saveData(replicate(number_of_calculations, prs_algorithm(rosenbrock_2D)), "./data/prs_rosenbrock_2D.rds")
+mean_prs_rosenbrock_2D <- mean(prs_rosenbrock_2D)
 
 prs_rosenbrock_10D <- loadData("./data/prs_rosenbrock_10D.rds")
 if (is.null(prs_rosenbrock_10D)) prs_rosenbrock_10D <- saveData(replicate(number_of_calculations, prs_algorithm(rosenbrock_10D)), "./data/prs_rosenbrock_10D.rds")
+mean_prs_rosenbrock_10D <- mean(prs_rosenbrock_10D)
 
 prs_rosenbrock_20D <- loadData("./data/prs_rosenbrock_20D.rds")
 if (is.null(prs_rosenbrock_20D)) prs_rosenbrock_20D <- saveData(replicate(number_of_calculations, prs_algorithm(rosenbrock_20D)), "./data/prs_rosenbrock_20D.rds")
+mean_prs_rosenbrock_20D <- mean(prs_rosenbrock_20D)
 
 prs_rastrigin_2D <- loadData("./data/prs_rastrigin_2D.rds")
 if (is.null(prs_rastrigin_2D)) prs_rastrigin_2D <- saveData(replicate(number_of_calculations, prs_algorithm(rastrigin_2D)), "./data/prs_rastrigin_2D.rds")
+mean_prs_rastrigin_2D <- mean(prs_rastrigin_2D)
 
 prs_rastrigin_10D <- loadData("./data/prs_rastrigin_10D.rds")
 if (is.null(prs_rastrigin_10D)) prs_rastrigin_10D <- saveData(replicate(number_of_calculations, prs_algorithm(rastrigin_10D)), "./data/prs_rastrigin_10D.rds")
+mean_prs_rastrigin_10D <- mean(prs_rastrigin_10D)
 
 prs_rastrigin_20D <- loadData("./data/prs_rastrigin_20D.rds")
 if (is.null(prs_rastrigin_20D)) prs_rastrigin_20D <- saveData(replicate(number_of_calculations, prs_algorithm(rastrigin_20D)), "./data/prs_rastrigin_20D.rds")
+mean_prs_rastrigin_20D <- mean(prs_rastrigin_20D)
 ```
 ## Algorytm GA (Genetic Algorithm)
 
@@ -152,28 +171,34 @@ ga_algorithm <- function(f, cost = 1000L) {
 
 ```
 
-### Generacja danych
+### Generacja danych oraz obliczenie średnich wyników algorytmu
 
-Generowanie minimalnych wartości funkcji za pomocą algorytmu GA oraz zapisanie ich do pliku rds.
+Generowanie minimalnych wartości funkcji za pomocą algorytmu GA, obliczenie średniej z wyników oraz zapisanie ich do pliku rds.
 
 ```{r}
 ga_rosenbrock_2D <- loadData("./data/ga_rosenbrock_2D.rds")
 if (is.null(ga_rosenbrock_2D))ga_rosenbrock_2D <- saveData(replicate(number_of_calculations, ga_algorithm(rosenbrock_2D)), "./data/ga_rosenbrock_2D.rds")
+mean_ga_rosenbrock_2D <- mean(ga_rosenbrock_2D)
 
 ga_rosenbrock_10D <- loadData("./data/ga_rosenbrock_10D.rds")
 if (is.null(ga_rosenbrock_10D)) ga_rosenbrock_10D <- saveData(replicate(number_of_calculations, ga_algorithm(rosenbrock_10D)), "./data/ga_rosenbrock_10D.rds")
+mean_ga_rosenbrock_10D <- mean(ga_rosenbrock_10D)
 
 ga_rosenbrock_20D <- loadData("./data/ga_rosenbrock_20D.rds")
 if (is.null(ga_rosenbrock_20D)) ga_rosenbrock_20D <- saveData(replicate(number_of_calculations, ga_algorithm(rosenbrock_20D)), "./data/ga_rosenbrock_20D.rds")
+mean_ga_rosenbrock_20D <- mean(ga_rosenbrock_20D)
 
 ga_rastrigin_2D <- loadData("./data/ga_rastrigin_2D.rds")
 if (is.null(ga_rastrigin_2D)) ga_rastrigin_2D <- saveData(replicate(number_of_calculations, ga_algorithm(rastrigin_2D)), "./data/ga_rastrigin_2D.rds")
+mean_ga_rastrigin_2D <- mean(ga_rastrigin_2D)
 
 ga_rastrigin_10D <- loadData("./data/ga_rastrigin_10D.rds")
 if (is.null(ga_rastrigin_10D)) ga_rastrigin_10D <- saveData(replicate(number_of_calculations, ga_algorithm(rastrigin_10D)), "./data/ga_rastrigin_10D.rds")
+mean_ga_rastrigin_10D <- mean(ga_rastrigin_10D)
 
 ga_rastrigin_20D <- loadData("./data/ga_rastrigin_20D.rds")
 if (is.null(ga_rastrigin_20D)) ga_rastrigin_20D <- saveData(replicate(number_of_calculations, ga_algorithm(rastrigin_20D)), "./data/ga_rastrigin_20D.rds")
+mean_ga_rastrigin_20D <- mean(ga_rastrigin_20D)
 ```
 ## Porównanie średnich wyników algorytmów oraz ich analiza pod kątem położenia i rozproszenia rozkładu
 
