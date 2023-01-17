@@ -1,0 +1,16 @@
+---
+title: "Analiza działania algorytmów minimalizacji stochastycznej"
+author:
+- Patryk Klatka
+- Szymon Twardosz
+output: html_notebook
+---
+
+[//]: # (PDF Render: output: pdf_document )
+
+## Wstęp
+The code chunk appears:
+```{r}
+x <- 1:10
+x
+```
