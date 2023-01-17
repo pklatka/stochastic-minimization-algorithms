@@ -33,37 +33,76 @@ Dziedziny funkcji, zgodnie z dokumentacją, wynoszą:
 gdzie $n$ oznacza wymiar funkcji.
 ```{r}
 # Rosenbrock function
-rosenbrock.2D <- makeRosenbrockFunction(dimensions = 2L)
-rosenbrock.10D <- makeRosenbrockFunction(dimensions = 10L)
-rosenbrock.20D <- makeRosenbrockFunction(dimensions = 20L)
+rosenbrock_2D <- makeRosenbrockFunction(dimensions = 2L)
+rosenbrock_10D <- makeRosenbrockFunction(dimensions = 10L)
+rosenbrock_20D <- makeRosenbrockFunction(dimensions = 20L)
 
 # Rastrigin function
-rastrigin.2D <- makeRastriginFunction(dimensions = 2L)
-rastrigin.10D <- makeRastriginFunction(dimensions = 10L)
-rastrigin.20D <- makeRastriginFunction(dimensions = 20L)
+rastrigin_2D <- makeRastriginFunction(dimensions = 2L)
+rastrigin_10D <- makeRastriginFunction(dimensions = 10L)
+rastrigin_20D <- makeRastriginFunction(dimensions = 20L)
 ```
 ## Algorytm PRS (Pure Random Search)
 
-
+Opis algorytmu.
 
 ### Implementacja
 
+```{r}
+prs_algorithm <- function(f, cost = 1000L) {
+  # f - function to minimize
+  # cost - maximum number of iterations
+  # returns: minimum function value f(min)
+  return(9)
+}
+```
 ### Średni wynik algorytmu dla odpowiednich funkcji oraz wymiarów
+
+```{r}
+number_of_calculations <- 50L
+
+prs_rosenbrock_2D <- replicate(number_of_calculations, prs_algorithm(rosenbrock_2D))
+prs_rosenbrock_10D <- replicate(number_of_calculations, prs_algorithm(rosenbrock_10D))
+prs_rosenbrock_20D <- replicate(number_of_calculations, prs_algorithm(rosenbrock_20D))
+
+prs_rastrigin_2D <- replicate(number_of_calculations, prs_algorithm(rastrigin_2D))
+prs_rastrigin_10D <- replicate(number_of_calculations, prs_algorithm(rastrigin_10D))
+prs_rastrigin_20D <- replicate(number_of_calculations, prs_algorithm(rastrigin_20D))
+```
 
 ## Algorytm GA (Genetic Algorithm)
 
-```{r}
-GA <- ga(type = "real-valued",
-         fitness =  function(x) -rastrigin.2D(x),
-         lower =  getLowerBoxConstraints(rastrigin.2D), upper = getUpperBoxConstraints(rastrigin.2D),
-         popSize = 50, maxiter = 1000, run = 100)
-summary(GA)
-```
+Opis algorytmu.
+
 
 ### Implementacja
 
+```{r}
+ga_algorithm <- function(f, cost = 1000){
+  # f - function to minimize
+  # returns: list with minimum value and its position
+  result <- ga(type = "real-valued",
+               fitness =  function(x) -f(x),
+               lower =  getLowerBoxConstraints(f), upper = getUpperBoxConstraints(f), maxiter = cost, run = cost)
+
+  return(f(result@solution))
+}
+
+```
+
 ### Średni wynik algorytmu dla odpowiednich funkcji oraz wymiarów
 
+```{r}
+number_of_calculations <- 50L
+
+ga_rosenbrock_2D <- replicate(number_of_calculations, ga_algorithm(rosenbrock_2D))
+ga_rosenbrock_10D <- replicate(number_of_calculations, ga_algorithm(rosenbrock_10D))
+ga_rosenbrock_20D <- replicate(number_of_calculations, ga_algorithm(rosenbrock_20D))
+
+ga_rastrigin_2D <- replicate(number_of_calculations, ga_algorithm(rastrigin_2D))
+ga_rastrigin_10D <- replicate(number_of_calculations, ga_algorithm(rastrigin_10D))
+ga_rastrigin_20D <- replicate(number_of_calculations, ga_algorithm(rastrigin_20D))
+```
 ## Analiza wyników pod kątem położenia i rozproszenia rozkładu
 
 ### Funkcja Rosenbrocka
