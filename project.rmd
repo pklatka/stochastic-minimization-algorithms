@@ -142,8 +142,7 @@ mean_prs_rastrigin_20D <- mean(prs_rastrigin_20D)
 ```
 ## Algorytm GA (Genetic Algorithm)
 
-Opis algorytmu.
-
+Algorytm genetyczny jest algorytmem ewolucyjnym, który bazuje na zasadzie ewolucji naturalnej. Została wybrana implementacja z biblioteki `GA`, dostępnej w `CRAN`. Przy korzystaniu z funkcji z tej biblioteki należy funkcję, która ma być minimalizowana, przekształcić do postaci `f(x) = -f(x)`, ponieważ domyślnie algorytm szuka maksimum.
 
 ### Implementacja
 
