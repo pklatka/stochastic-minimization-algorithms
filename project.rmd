@@ -130,7 +130,10 @@ ga_algorithm <- function(f, cost = 1000L) {
 
   result <- ga(type = "real-valued",
                fitness = function(x) -f(x),
-               lower = getLowerBoxConstraints(f), upper = getUpperBoxConstraints(f), maxiter = cost, run = cost)
+               lower = getLowerBoxConstraints(f),
+               upper = getUpperBoxConstraints(f),
+               maxiter = cost,
+               run = cost)
 
   return(f(result@solution))
 }
