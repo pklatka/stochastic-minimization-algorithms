@@ -8,9 +8,86 @@ output: html_notebook
 
 [//]: # (PDF Render: output: pdf_document )
 
-## Wstęp
-The code chunk appears:
-```{r}
-x <- 1:10
-x
+```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
+# Include libraries
+library(smoof)
+library(GA)
 ```
+
+## Wstęp
+Projekt ma na celu analizę działania algorytmów minimalizacji stochastycznej dwóch algorytmów: PRS (Pure Random Search) oraz GA (Genetic Algorithm).
+Oba algorytmy były testowane na dwóch funkcjach z pakietu `smoof` z wymiarami: 2,10,20.
+Każdy algorytm został uruchomiony 50 razy, a każde uruchomienie miało 1000 wywołań.
+Każda funkcja była testowana na dwóch algorytmach, a wyniki zostały porównane pod kątem średnich znalezionych minimów, położenia rozkładu wyników oraz istotności statystycznej różnicy między średnim wynikiem obu algorytmów.
+Analizy statystyczne zostały wykonane na poziomie istotności 0,05.
+
+## Testowane funkcje
+
+W celu przetestowania algorytmów zostały wybrane dwie funkcje z pakietu `smoof`: funkcja [Rosenbrocka](https://jakobbossek.github.io/smoof/reference/makeRosenbrockFunction.html) oraz [Rastrigina](https://jakobbossek.github.io/smoof/reference/makeRastriginFunction.html).
+Każda funkcja została wygenerowana na trzech różnych wymiarach: 2, 10, 20.
+Dziedziny funkcji, zgodnie z dokumentacją, wynoszą:
+
+- Funkcja Rosenbrocka: $x_i \in [−30,30]$ dla $i = 1, 2, \dots, n$
+- Funkcja Rastrigina: $x_i \in [−5.12,5.12]$ dla $i = 1, 2, \dots, n$
+
+gdzie $n$ oznacza wymiar funkcji.
+```{r}
+# Rosenbrock function
+rosenbrock.2D <- makeRosenbrockFunction(dimensions = 2L)
+rosenbrock.10D <- makeRosenbrockFunction(dimensions = 10L)
+rosenbrock.20D <- makeRosenbrockFunction(dimensions = 20L)
+
+# Rastrigin function
+rastrigin.2D <- makeRastriginFunction(dimensions = 2L)
+rastrigin.10D <- makeRastriginFunction(dimensions = 10L)
+rastrigin.20D <- makeRastriginFunction(dimensions = 20L)
+```
+## Algorytm PRS (Pure Random Search)
+
+
+
+### Implementacja
+
+### Średni wynik algorytmu dla odpowiednich funkcji oraz wymiarów
+
+## Algorytm GA (Genetic Algorithm)
+
+```{r}
+GA <- ga(type = "real-valued",
+         fitness =  function(x) -rastrigin.2D(x),
+         lower =  getLowerBoxConstraints(rastrigin.2D), upper = getUpperBoxConstraints(rastrigin.2D),
+         popSize = 50, maxiter = 1000, run = 100)
+summary(GA)
+```
+
+### Implementacja
+
+### Średni wynik algorytmu dla odpowiednich funkcji oraz wymiarów
+
+## Analiza wyników pod kątem położenia i rozproszenia rozkładu
+
+### Funkcja Rosenbrocka
+
+#### Wymiar 2D
+#### Wymiar 10D
+#### Wymiar 20D
+
+### Funkcja Rastrigina
+
+#### Wymiar 2D
+#### Wymiar 10D
+#### Wymiar 20D
+
+## Analiza istotności statystycznej różnicy między średnim wynikiem
+
+### Funkcja Rosenbrocka
+
+#### Wymiar 2D
+#### Wymiar 10D
+#### Wymiar 20D
+
+### Funkcja Rastrigina
+
+#### Wymiar 2D
+#### Wymiar 10D
+#### Wymiar 20D
