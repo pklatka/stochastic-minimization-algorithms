@@ -36,8 +36,8 @@ W celu przetestowania algorytmów zostały wybrane dwie funkcje z pakietu `smoof
 Każda funkcja została wygenerowana na trzech różnych wymiarach: 2, 10, 20.
 Dziedziny funkcji, zgodnie z dokumentacją, wynoszą:
 
--   Funkcja Rosenbrocka: $x_i \in [−30,30]$ dla $i = 1, 2, \dots, n$
--   Funkcja Rastrigina: $x_i \in [−5.12,5.12]$ dla $i = 1, 2, \dots, n$
+-   Funkcja Rosenbrocka: $x_i \in [-30,30]$ dla $i = 1, 2, \dots, n$
+-   Funkcja Rastrigina: $x_i \in [-5.12,5.12]$ dla $i = 1, 2, \dots, n$
 
 gdzie $n$ oznacza wymiar funkcji.
 
@@ -302,7 +302,7 @@ W tym przypadku przedział ufności dla średniej wynosi:
 [ \overline{X} - t_{n-1} \frac{s}{\sqrt{n}}, \overline{X} + t_{n-1} \frac{s}{\sqrt{n}} ]
 \end{equation}
 
-Analogicznie dla testu wartości średniej, ponieważ nie znamy parametru \sigma, wykorzystamy test Studenta, korzystając ze statystyki $T$.
+Analogicznie dla testu wartości średniej, ponieważ nie znamy parametru $\sigma$, wykorzystamy test Studenta, korzystając ze statystyki $T$.
 Zbiór krytyczny na poziomie istotności $\alpha$ dla dwustronnej hipotezy alternatywnej ma postać:
 
 \begin{equation}
