@@ -282,7 +282,7 @@ W tym celu wykorzystano przedziały ufności 95% oraz test dla wartości średni
 Ze względu na tą samą oczekiwaną wartość minimum funkcji Rosenbrocka oraz Rastrigina [równą 0](https://en.wikipedia.org/wiki/Test_functions_for_optimization#Test_functions_for_single-objective_optimization),
 test hipotezy zerowej przyjmuje postać: $H_0: m = 0$, gdzie $m$ to wartość przeciętna algorytmu.
 Ze względu na liczbę powtórzeń założono, że rozkład średniej może być sensownie przybliżony przez rozkład normalny $N(m,\sigma)$.
-Ponieważ nie znamy parametru \sigma, do wyznaczenia przedziałów ufności wykorzystano statystykę:
+Ponieważ nie znamy parametru $\sigma$, do wyznaczenia przedziałów ufności wykorzystano statystykę:
 
 \begin{equation}
 T=\frac{\overline{X}-m}{\frac{s}{\sqrt{n}}}
