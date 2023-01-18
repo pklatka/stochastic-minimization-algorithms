@@ -24,19 +24,19 @@ library(hrbrthemes)
 
 ## Wstęp
 
-Projekt ma na celu analizę działania algorytmów minimalizacji stochastycznej dwóch algorytmów: PRS (Pure Random Search) oraz GA (Genetic Algorithm).
-Oba algorytmy były testowane na dwóch funkcjach z pakietu `smoof` z wymiarami: 2,10,20.
-Każdy algorytm został uruchomiony 50 razy, a każde uruchomienie miało 1000 wywołań.
-Każda funkcja była testowana na dwóch algorytmach, a wyniki zostały porównane pod kątem średnich znalezionych minimów, położenia rozkładu wyników oraz istotności statystycznej różnicy między średnim wynikiem obu algorytmów.
-Analizy statystyczne zostały wykonane na poziomie istotności 0,05.
+Tematem projektu była analiza działania algorytmów minimalizacji stochastycznej dwóch algorytmów: PRS (Pure Random Search) oraz GA (Genetic Algorithm).
+Oba algorytmy zostały przetestowane na dwóch funkcjach z pakietu `smoof` z wymiarami: 2, 10, 20.
+Każdy algorytm został uruchomiony 50 razy, a każde uruchomienie (budżet obliczeniowy) miało 1000 wywołań.
+Każda funkcja została przetestowana na dwóch algorytmach, a wyniki zostały porównane pod kątem średnich znalezionych minimów, położenia rozkładu wyników oraz istotności statystycznej różnicy między średnim wynikiem obu algorytmów.
 
 ## Testowane funkcje
 
-W celu przetestowania algorytmów zostały wybrane dwie funkcje z pakietu `smoof`: funkcja [Rosenbrocka](https://jakobbossek.github.io/smoof/reference/makeRosenbrockFunction.html) oraz [Rastrigina](https://jakobbossek.github.io/smoof/reference/makeRastriginFunction.html).
+W celu przetestowania algorytmów zostały wybrane dwie funkcje z pakietu `smoof`: funkcja [Rosenbrocka](https://en.wikipedia.org/wiki/Rosenbrock_function) oraz [Rastrigina](https://en.wikipedia.org/wiki/Rastrigin_function).
 Każda funkcja została wygenerowana na trzech różnych wymiarach: 2, 10, 20.
-Dziedziny funkcji, zgodnie z dokumentacją, wynoszą:
+Obie badane funkcje osiągają minimum [równe 0](https://en.wikipedia.org/wiki/Test_functions_for_optimization#Test_functions_for_single-objective_optimization).
+Dziedziny funkcji, zgodnie z dokumentacją pakietu, wynoszą:
 
--   Funkcja Rosenbrocka: $x_i \in [-30,30]$ dla $i = 1, 2, \dots, n$
+-   Funkcja Rosenbrocka: $x_i \in [-5,10]$ dla $i = 1, 2, \dots, n$
 -   Funkcja Rastrigina: $x_i \in [-5.12,5.12]$ dla $i = 1, 2, \dots, n$
 
 gdzie $n$ oznacza wymiar funkcji.
@@ -55,7 +55,7 @@ rastrigin_20D <- makeRastriginFunction(dimensions = 20L)
 
 ## Stałe i funkcje pomocnicze
 
-W celu ułatwienia analizy oraz łatwej zmiany parametrów, w tej sekcji zostały zdefiniowane stałe oraz funkcje pomocnicze.
+W celu ułatwienia analizy oraz łatwej zmiany parametrów zostały zdefiniowane stałe, oraz funkcje pomocnicze.
 
 ```{r}
 # Define number of calculations for each algorithm
@@ -88,7 +88,7 @@ saveData <- function(data, filename) {
 
 ## Algorytm PRS (Pure Random Search)
 
-Opis algorytmu.
+Algorytm PRS (Pure Random Search - przeszukiwanie przypadkowe) oparty jest na losowaniu punktów z zadanej dziedziny. Każda współrzędna jest losowana z rozkładem jednostajnym. Po wylosowaniu zadanej liczby punktów, wyszukujemy minimum funkcji wyliczając jej wartość w wylosowanych punktach. Wynikiem algorytmu jest najmniejsza wartość funkcji.
 
 ### Implementacja
 
@@ -123,7 +123,7 @@ prs_algorithm <- function(f, cost = 1000L) {
 
 ### Generacja danych oraz obliczenie średnich wyników algorytmu
 
-Generowanie minimalnych wartości funkcji za pomocą algorytmu PRS, obliczenie średniej z wyników oraz zapisanie ich do pliku rds.
+W celu przyspieszenia działania programu wszystkie wygenerowane dane zostały zapisane do plików o rozszerzeniu rds.
 
 ```{r}
 prs_rosenbrock_2D <- loadData("./data/prs_rosenbrock_2D.rds")
@@ -153,9 +153,9 @@ mean_prs_rastrigin_20D <- mean(prs_rastrigin_20D)
 
 ## Algorytm GA (Genetic Algorithm)
 
-Algorytm genetyczny jest algorytmem ewolucyjnym, który bazuje na zasadzie ewolucji naturalnej.
-Została wybrana implementacja z biblioteki `GA`, dostępnej w `CRAN`.
-Przy korzystaniu z funkcji z tej biblioteki należy funkcję, która ma być minimalizowana, przekształcić do postaci `f(x) = -f(x)`, ponieważ domyślnie algorytm szuka maksimum.
+Algorytm genetyczny oparty jest na zjawisku ewolucji biologicznej. Na początku losowana jest pewna populacja początkowa, która zostaje poddana selekcji (ocenie). Po wyborze najlepszych osobników do reprodukcji następuje krzyżowanie genotypów, a następnie przeprowadzana jest mutacja. Po odrzuceniu najsłabszych osobników utworzone jest nowe pokolenie. Algorytm działa, dopóki nie zostanie spełniony warunek zatrzymania np. liczba pokoleń.
+W projekcie została wykorzystana biblioteka `GA`, dostępna w `CRAN`, gdzie zaimplementowany jest algorytm.
+Przy korzystaniu z funkcji z tej biblioteki należy funkcję, która ma być minimalizowana, przekształcić do postaci `f(x) = -f(x)`, ponieważ domyślnie funkcja biblioteczna szuka maksimum.
 
 ### Implementacja
 
@@ -185,7 +185,7 @@ ga_algorithm <- function(f, cost = 1000L) {
 
 ### Generacja danych oraz obliczenie średnich wyników algorytmu
 
-Generowanie minimalnych wartości funkcji za pomocą algorytmu GA, obliczenie średniej z wyników oraz zapisanie ich do pliku rds.
+W celu przyspieszenia działania programu wszystkie wygenerowane dane zostały zapisane do plików o rozszerzeniu rds.
 
 ```{r}
 ga_rosenbrock_2D <- loadData("./data/ga_rosenbrock_2D.rds")
@@ -215,17 +215,20 @@ mean_ga_rastrigin_20D <- mean(ga_rastrigin_20D)
 
 ## Porównanie średnich wyników algorytmów oraz ich analiza pod kątem położenia i rozproszenia rozkładu
 
+Dla każdej funkcji (oraz jej wymiaru) został przedstawiony histogram oraz wykres pudełkowy wyników algorytmów, w celu
+analizy ich położenia i rozproszenia.
+
 ```{r}
 draw_plots <- function(prs, ga) {
-  #PRS Algorithm
+  # PRS Algorithm
   hist(prs, col = "yellow", xlab = "Return value of PRS Algorithm")
   boxplot(prs, col = 'yellow', ylab = "Return value of PRS Algorithm", main = "Boxplot of PRS Algorithm")
 
-  #GA Algorithm
+  # GA Algorithm
   hist(ga, col = "green", xlab = "Return value of GA Algorithm")
   boxplot(ga, col = 'green', ylab = "Return value of GA Algorithm", main = "Boxplot of GA Algorithm")
 
-  #Comparison
+  # Comparison
   data <- data.frame(prs, ga)
 
   func <- c(rep("PRS", length(prs)), rep("GA", length(ga)))
@@ -285,7 +288,7 @@ Ze względu na liczbę powtórzeń założono, że rozkład średniej może być
 Ponieważ nie znamy parametru $\sigma$, do wyznaczenia przedziałów ufności wykorzystano statystykę:
 
 \begin{equation}
-T=\frac{\overline{X}-m}{\frac{s}{\sqrt{n}}}
+T=\frac{\overline{X} - m}{\frac{s}{\sqrt{n}}}
 \end{equation}
 
 Można pokazać, że
@@ -294,7 +297,7 @@ Można pokazać, że
 T \sim t_{n-1}
 \end{equation}
 
-gdzie $t_{n-1}$ to rozkład t o $n$ stopniach swobody, zwanym też rozkładem Studenta.
+gdzie $t_{n-1}$ to rozkład $t$ o $n$ stopniach swobody, zwanym też rozkładem Studenta.
 
 W tym przypadku przedział ufności dla średniej wynosi:
 
@@ -309,101 +312,106 @@ Zbiór krytyczny na poziomie istotności $\alpha$ dla dwustronnej hipotezy alter
 C = \{t: t \leq -t_{1-\frac{\alpha}{2},n-1} \lor t \geq t_{1-\frac{\alpha}{2},n-1}\}
 \end{equation}
 
-P-wartość wynosi:
+Najmniejszy poziom istotności, przy którym dana wartość prowadzi do odrzucenia hipotezy
+$H_0$, zwany także p-wartością wynosi:
 
 \begin{equation}
-p(t) = 2 \cdot P(T \geq |t| | H_0)
+p(t) = 2 \cdot P(T \geq |t| | H_0) = 2 \cdot (1 - F_{n - 1}(|t|))
 \end{equation}
 
+gdzie $F_{n - 1}$ jest dystrybuantą $t_{n-1}$.
 
 ### Funkcja Rosenbrocka
 
 #### Wymiar 2D
 
+Algorytm PRS
 ```{r}
-# Algorytm PRS
-t.test(prs_rosenbrock_2D, mu = 0, conf.level = 0.95)
+t.test(prs_rosenbrock_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
+
+Algorytm GA
 ```{r}
-# Algorytm GA
-t.test(ga_rosenbrock_2D, mu = 0, conf.level = 0.95)
+t.test(ga_rosenbrock_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
 
 
 #### Wymiar 10D
 
+Algorytm PRS
 
 ```{r}
-# Algorytm PRS
-t.test(prs_rosenbrock_10D, mu = 0, conf.level = 0.95)
+t.test(prs_rosenbrock_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
+Algorytm GA
+
 ```{r}
-# Algorytm GA
-t.test(ga_rosenbrock_10D, mu = 0, conf.level = 0.95)
+t.test(ga_rosenbrock_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
 
 #### Wymiar 20D
 
+Algorytm PRS
 
 ```{r}
-# Algorytm PRS
-t.test(prs_rosenbrock_20D, mu = 0, conf.level = 0.95)
+t.test(prs_rosenbrock_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
+Algorytm GA
+
 ```{r}
-# Algorytm GA
-t.test(ga_rosenbrock_20D, mu = 0, conf.level = 0.95)
+t.test(ga_rosenbrock_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
 
 ### Funkcja Rastrigina
 
 #### Wymiar 2D
 
+Algorytm PRS
 
 ```{r}
-# Algorytm PRS
-t.test(prs_rastrigin_2D, mu = 0, conf.level = 0.95)
+t.test(prs_rastrigin_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
+Algorytm GA
 ```{r}
-# Algorytm GA
-t.test(ga_rastrigin_2D, mu = 0, conf.level = 0.95)
+t.test(ga_rastrigin_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
 
 #### Wymiar 10D
 
+Algorytm PRS
 ```{r}
-# Algorytm PRS
-t.test(prs_rastrigin_10D, mu = 0, conf.level = 0.95)
+t.test(prs_rastrigin_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
+Algorytm GA
+
 ```{r}
-# Algorytm GA
-t.test(ga_rastrigin_10D, mu = 0, conf.level = 0.95)
+t.test(ga_rastrigin_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
 
 #### Wymiar 20D
 
-
+Algorytm PRS
 ```{r}
-# Algorytm PRS
-t.test(prs_rastrigin_20D, mu = 0, conf.level = 0.95)
+t.test(prs_rastrigin_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
+Algorytm GA
 ```{r}
-# Algorytm GA
-t.test(ga_rastrigin_20D, mu = 0, conf.level = 0.95)
+t.test(ga_rastrigin_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
 ```
 
 #### Analiza wyników
 
 Algorytm PRS (Pure Random Search) i algorytm genetyczny (GA) działają poprawnie na wygenerowanych zbiorach danych.
-Obydwa algorytmy dąrzą do uzyskania minimalnej wartości optymalizowanej funckji.
+Obydwa algorytmy dążą do uzyskania minimalnej wartości optymalizowanej funkcji.
 Natomiast lepiej z tym zadaniem radzi sobie algorytm genetyczny.
 
-Dla funckji 2D (przy budżecie 1000 wywołań) średnia osiągana wartość jest rzędu 10\^-8 (funkcja Rastrigina) lub 10\^-5 (funkcja Rosenbrocka).
-Podczas gdy średnia drugiego algorytmu wynosi aż 1.7 (funkcja Rastrigina) oraz 0.6 (funkcja Rosenbrocka).
+Dla funkcji 2D (przy budżecie 1000 wywołań) średnia osiągana wartość jest rzędu 10\^-8 (funkcja Rastrigina) lub 10\^-5 (funkcja Rosenbrocka).
+Podczas gdy średnia drugiego algorytmu wynosi aż 1.7 (funkcja Rastrigina) oraz 0,6 (funkcja Rosenbrocka).
 
 Dla większej ilości wymiarów (tj. 10,20) nadal obserwujemy przewagę algorytmu GA nad PRS.
-Tutaj również algorytmy uzyskały lepsze wyniki dla funkcji Rastrigina ( różniły się one o rząd/rzędy wielkości) niz dla funkcji Rosenbrocka.
+Tutaj również algorytmy uzyskały lepsze wyniki dla funkcji Rastrigina (różniły się one o rząd/rzędy wielkości) niż dla funkcji Rosenbrocka.
 
-Szczegółowe informację dotyczące średnich dla poszczególnych wywołań funkcji oraz minimalnej uzyskanej wartości znajdują się poniżej.
+Szczegółowe informacje dotyczące średnich dla poszczególnych wywołań funkcji oraz minimalnej uzyskanej wartości znajdują się poniżej.
 
 ##### Algorytm (GA) - średnie wyniki
 
@@ -413,7 +421,7 @@ Szczegółowe informację dotyczące średnich dla poszczególnych wywołań fun
 | 10     | 0.002755626  | 5.952174     |
 | 20     | 0.324142     | 39.86294     |
 
-##### Algorytm (PRS) - średnie wynki
+##### Algorytm (PRS) - średnie wyniki
 
 | Wymiar | Rastrigin | Rosenbrock |
 |--------|-----------|------------|
