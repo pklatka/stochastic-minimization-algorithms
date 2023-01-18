@@ -4,9 +4,9 @@ author:
 - Patryk Klatka
 - Szymon Twardosz
 output: html_notebook
-editor_options: 
-  markdown: 
-    wrap: sentence
+editor_options:
+markdown:
+wrap: sentence
 ---
 
 ```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
@@ -62,10 +62,10 @@ W celu ułatwienia analizy oraz łatwej zmiany parametrów, w tej sekcji został
 number_of_calculations <- 50L
 
 loadData <- function(filename) {
-    #' Loads data from file
-    #'
-    #' @param filename Name of the file
-    #' @return Returns data from file, otherwise NULL if file does not exist
+      #' Loads data from file
+      #'
+      #' @param filename Name of the file
+      #' @return Returns data from file, otherwise NULL if file does not exist
 
   if (file.exists(filename)) {
     return(readRDS(filename))
@@ -75,11 +75,11 @@ loadData <- function(filename) {
 }
 
 saveData <- function(data, filename) {
-    #' Saves data to file
-    #'
-    #' @param data Data to save
-    #' @param filename Name of the file
-    #' @return Returns data parameter
+      #' Saves data to file
+      #'
+      #' @param data Data to save
+      #' @param filename Name of the file
+      #' @return Returns data parameter
 
   saveRDS(data, filename)
   return(data)
@@ -94,11 +94,11 @@ Opis algorytmu.
 
 ```{r}
 prs_algorithm <- function(f, cost = 1000L) {
-    #' Pure Random Search algorithm
-    #'
-    #' @param f Function to minimize (from spoof package)
-    #' @param cost Number of calculations
-    #' @return Returns function value
+      #' Pure Random Search algorithm
+      #'
+      #' @param f Function to minimize (from spoof package)
+      #' @param cost Number of calculations
+      #' @return Returns function value
 
   if (!isSmoofFunction(f)) {
     stop("Function is not from smoof package.")
@@ -109,7 +109,7 @@ prs_algorithm <- function(f, cost = 1000L) {
   domain_max <- getUpperBoxConstraints(f)
 
   points <- matrix(0, nrow = cost, ncol = length(domain_min))
-  for (i in seq_along(domain_min)){
+  for (i in seq_along(domain_min)) {
     uniform_distribution_points <- runif(cost, domain_min[i], domain_max[i])
     for (j in seq_along(uniform_distribution_points)) {
       points[j, i] <- uniform_distribution_points[j]
@@ -161,11 +161,11 @@ Przy korzystaniu z funkcji z tej biblioteki należy funkcję, która ma być min
 
 ```{r}
 ga_algorithm <- function(f, cost = 1000L) {
-  #' Genetic Algorithm
-  #'
-  #' @param f Function to minimize (from spoof package)
-  #' @param cost Number of calculations
-  #' @return Returns function value
+    #' Genetic Algorithm
+    #'
+    #' @param f Function to minimize (from spoof package)
+    #' @param cost Number of calculations
+    #' @return Returns function value
 
   if (!isSmoofFunction(f)) {
     stop("Function is not from smoof package.")
@@ -216,22 +216,22 @@ mean_ga_rastrigin_20D <- mean(ga_rastrigin_20D)
 ## Porównanie średnich wyników algorytmów oraz ich analiza pod kątem położenia i rozproszenia rozkładu
 
 ```{r}
-draw_plots <-function(prs, ga){
-#PRS Algorithm
+draw_plots <- function(prs, ga) {
+  #PRS Algorithm
   hist(prs, col = "yellow", xlab = "Return value of PRS Algorithm")
   boxplot(prs, col = 'yellow', ylab = "Return value of PRS Algorithm", main = "Boxplot of PRS Algorithm")
-  
+
   #GA Algorithm
   hist(ga, col = "green", xlab = "Return value of GA Algorithm")
   boxplot(ga, col = 'green', ylab = "Return value of GA Algorithm", main = "Boxplot of GA Algorithm")
-  
+
   #Comparison
   data <- data.frame(prs, ga)
 
   func <- c(rep("PRS", length(prs)), rep("GA", length(ga)))
   value <- c(prs, ga)
   data <- data.frame(func, value)
-  boxplot(data$value ~ data$func , col=terrain.colors(4))
+  boxplot(data$value ~ data$func, col = terrain.colors(4))
 }
 ```
 
@@ -277,21 +277,119 @@ draw_plots(prs_rastrigin_20D, ga_rastrigin_20D)
 
 ## Analiza istotności statystycznej różnicy między wynikami algorytmów
 
+W tej sekcji została przeprowadzona analiza istotności statystycznej różnicy między wynikami algorytmów.
+W tym celu wykorzystano przedziały ufności 95% oraz test dla wartości średniej.
+Ze względu na tą samą oczekiwaną wartość minimum funkcji Rosenbrocka oraz Rastrigina [równą 0](https://en.wikipedia.org/wiki/Test_functions_for_optimization#Test_functions_for_single-objective_optimization),
+test hipotezy zerowej przyjmuje postać: $H_0: m = 0$, gdzie $m$ to wartość przeciętna algorytmu.
+Ze względu na liczbę powtórzeń założono, że rozkład średniej może być sensownie przybliżony przez rozkład normalny $N(m,\sigma)$.
+Ponieważ nie znamy parametru \sigma, do wyznaczenia przedziałów ufności wykorzystano statystykę:
+
+\begin{equation}
+T=\frac{\overline{X}-m}{\frac{s}{\sqrt{n}}}
+\end{equation}
+
+Można pokazać, że
+
+\begin{equation}
+T \sim t_{n-1}
+\end{equation}
+
+gdzie $t_{n-1}$ to rozkład t o $n$ stopniach swobody, zwanym też rozkładem Studenta.
+
+W tym przypadku przedział ufności dla średniej wynosi:
+
+\begin{equation}
+[ \overline{X} - t_{n-1} \frac{s}{\sqrt{n}}, \overline{X} + t_{n-1} \frac{s}{\sqrt{n}} ]
+\end{equation}
+
+Analogicznie dla testu wartości średniej, ponieważ nie znamy parametru \sigma, wykorzystamy test Studenta, korzystając ze statystyki $T$.
+Zbiór krytyczny na poziomie istotności $\alpha$ dla dwustronnej hipotezy alternatywnej ma postać:
+
+\begin{equation}
+C = \{t: t \leq -t_{1-\frac{\alpha}{2},n-1} \lor t \geq t_{1-\frac{\alpha}{2},n-1}\}
+\end{equation}
+
+P-wartość wynosi:
+
+\begin{equation}
+p(t) = 2 \cdot P(T \geq |t| | H_0)
+\end{equation}
+
+
 ### Funkcja Rosenbrocka
 
 #### Wymiar 2D
 
+```{r}
+# Algorytm PRS
+t.test(prs_rosenbrock_2D, mu = 0, conf.level = 0.95)
+```
+```{r}
+# Algorytm GA
+t.test(ga_rosenbrock_2D, mu = 0, conf.level = 0.95)
+```
+
+
 #### Wymiar 10D
 
+
+```{r}
+# Algorytm PRS
+t.test(prs_rosenbrock_10D, mu = 0, conf.level = 0.95)
+```
+```{r}
+# Algorytm GA
+t.test(ga_rosenbrock_10D, mu = 0, conf.level = 0.95)
+```
+
 #### Wymiar 20D
+
+
+```{r}
+# Algorytm PRS
+t.test(prs_rosenbrock_20D, mu = 0, conf.level = 0.95)
+```
+```{r}
+# Algorytm GA
+t.test(ga_rosenbrock_20D, mu = 0, conf.level = 0.95)
+```
 
 ### Funkcja Rastrigina
 
 #### Wymiar 2D
 
+
+```{r}
+# Algorytm PRS
+t.test(prs_rastrigin_2D, mu = 0, conf.level = 0.95)
+```
+```{r}
+# Algorytm GA
+t.test(ga_rastrigin_2D, mu = 0, conf.level = 0.95)
+```
+
 #### Wymiar 10D
 
+```{r}
+# Algorytm PRS
+t.test(prs_rastrigin_10D, mu = 0, conf.level = 0.95)
+```
+```{r}
+# Algorytm GA
+t.test(ga_rastrigin_10D, mu = 0, conf.level = 0.95)
+```
+
 #### Wymiar 20D
+
+
+```{r}
+# Algorytm PRS
+t.test(prs_rastrigin_20D, mu = 0, conf.level = 0.95)
+```
+```{r}
+# Algorytm GA
+t.test(ga_rastrigin_20D, mu = 0, conf.level = 0.95)
+```
 
 #### Analiza wyników
 
