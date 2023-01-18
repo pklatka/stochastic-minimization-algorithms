@@ -4,6 +4,9 @@ author:
 - Patryk Klatka
 - Szymon Twardosz
 output: html_notebook
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
@@ -15,9 +18,12 @@ output: html_notebook
 # Include libraries
 library(smoof)
 library(GA)
+library(ggplot2)
+library(hrbrthemes)
 ```
 
 ## Wstęp
+
 Projekt ma na celu analizę działania algorytmów minimalizacji stochastycznej dwóch algorytmów: PRS (Pure Random Search) oraz GA (Genetic Algorithm).
 Oba algorytmy były testowane na dwóch funkcjach z pakietu `smoof` z wymiarami: 2,10,20.
 Każdy algorytm został uruchomiony 50 razy, a każde uruchomienie miało 1000 wywołań.
@@ -30,10 +36,11 @@ W celu przetestowania algorytmów zostały wybrane dwie funkcje z pakietu `smoof
 Każda funkcja została wygenerowana na trzech różnych wymiarach: 2, 10, 20.
 Dziedziny funkcji, zgodnie z dokumentacją, wynoszą:
 
-- Funkcja Rosenbrocka: $x_i \in [−30,30]$ dla $i = 1, 2, \dots, n$
-- Funkcja Rastrigina: $x_i \in [−5.12,5.12]$ dla $i = 1, 2, \dots, n$
+-   Funkcja Rosenbrocka: $x_i \in [−30,30]$ dla $i = 1, 2, \dots, n$
+-   Funkcja Rastrigina: $x_i \in [−5.12,5.12]$ dla $i = 1, 2, \dots, n$
 
 gdzie $n$ oznacza wymiar funkcji.
+
 ```{r}
 # Rosenbrock function
 rosenbrock_2D <- makeRosenbrockFunction(dimensions = 2L)
@@ -49,6 +56,7 @@ rastrigin_20D <- makeRastriginFunction(dimensions = 20L)
 ## Stałe i funkcje pomocnicze
 
 W celu ułatwienia analizy oraz łatwej zmiany parametrów, w tej sekcji zostały zdefiniowane stałe oraz funkcje pomocnicze.
+
 ```{r}
 # Define number of calculations for each algorithm
 number_of_calculations <- 50L
@@ -112,9 +120,11 @@ prs_algorithm <- function(f, cost = 1000L) {
   return(min(apply(points, 1, f)))
 }
 ```
+
 ### Generacja danych oraz obliczenie średnich wyników algorytmu
 
 Generowanie minimalnych wartości funkcji za pomocą algorytmu PRS, obliczenie średniej z wyników oraz zapisanie ich do pliku rds.
+
 ```{r}
 prs_rosenbrock_2D <- loadData("./data/prs_rosenbrock_2D.rds")
 if (is.null(prs_rosenbrock_2D)) prs_rosenbrock_2D <- saveData(replicate(number_of_calculations, prs_algorithm(rosenbrock_2D)), "./data/prs_rosenbrock_2D.rds")
@@ -140,9 +150,12 @@ prs_rastrigin_20D <- loadData("./data/prs_rastrigin_20D.rds")
 if (is.null(prs_rastrigin_20D)) prs_rastrigin_20D <- saveData(replicate(number_of_calculations, prs_algorithm(rastrigin_20D)), "./data/prs_rastrigin_20D.rds")
 mean_prs_rastrigin_20D <- mean(prs_rastrigin_20D)
 ```
+
 ## Algorytm GA (Genetic Algorithm)
 
-Algorytm genetyczny jest algorytmem ewolucyjnym, który bazuje na zasadzie ewolucji naturalnej. Została wybrana implementacja z biblioteki `GA`, dostępnej w `CRAN`. Przy korzystaniu z funkcji z tej biblioteki należy funkcję, która ma być minimalizowana, przekształcić do postaci `f(x) = -f(x)`, ponieważ domyślnie algorytm szuka maksimum.
+Algorytm genetyczny jest algorytmem ewolucyjnym, który bazuje na zasadzie ewolucji naturalnej.
+Została wybrana implementacja z biblioteki `GA`, dostępnej w `CRAN`.
+Przy korzystaniu z funkcji z tej biblioteki należy funkcję, która ma być minimalizowana, przekształcić do postaci `f(x) = -f(x)`, ponieważ domyślnie algorytm szuka maksimum.
 
 ### Implementacja
 
@@ -199,31 +212,83 @@ ga_rastrigin_20D <- loadData("./data/ga_rastrigin_20D.rds")
 if (is.null(ga_rastrigin_20D)) ga_rastrigin_20D <- saveData(replicate(number_of_calculations, ga_algorithm(rastrigin_20D)), "./data/ga_rastrigin_20D.rds")
 mean_ga_rastrigin_20D <- mean(ga_rastrigin_20D)
 ```
+
 ## Porównanie średnich wyników algorytmów oraz ich analiza pod kątem położenia i rozproszenia rozkładu
 
+```{r}
+draw_plots <-function(prs, ga){
+#PRS Algorithm
+  hist(prs, col = "yellow", xlab = "Return value of PRS Algorithm")
+  boxplot(prs, col = 'yellow', ylab = "Return value of PRS Algorithm", main = "Boxplot of PRS Algorithm")
+  
+  #GA Algorithm
+  hist(ga, col = "green", xlab = "Return value of GA Algorithm")
+  boxplot(ga, col = 'green', ylab = "Return value of GA Algorithm", main = "Boxplot of GA Algorithm")
+  
+  #Comparison
+  data <- data.frame(prs, ga)
+
+  func <- c(rep("PRS", length(prs)), rep("GA", length(ga)))
+  value <- c(prs, ga)
+  data <- data.frame(func, value)
+  boxplot(data$value ~ data$func , col=terrain.colors(4))
+}
+```
 
 ### Funkcja Rosenbrocka
 
 #### Wymiar 2D
+
+```{r}
+draw_plots(prs_rosenbrock_2D, ga_rosenbrock_2D)
+```
+
 #### Wymiar 10D
+
+```{r}
+draw_plots(prs_rosenbrock_10D, ga_rosenbrock_10D)
+```
+
 #### Wymiar 20D
+
+```{r}
+draw_plots(prs_rosenbrock_20D, ga_rosenbrock_20D)
+```
 
 ### Funkcja Rastrigina
 
 #### Wymiar 2D
+
+```{r}
+draw_plots(prs_rastrigin_2D, ga_rastrigin_2D)
+```
+
 #### Wymiar 10D
+
+```{r}
+draw_plots(prs_rastrigin_10D, ga_rastrigin_10D)
+```
+
 #### Wymiar 20D
+
+```{r}
+draw_plots(prs_rastrigin_20D, ga_rastrigin_20D)
+```
 
 ## Analiza istotności statystycznej różnicy między wynikami algorytmów
 
 ### Funkcja Rosenbrocka
 
 #### Wymiar 2D
+
 #### Wymiar 10D
+
 #### Wymiar 20D
 
 ### Funkcja Rastrigina
 
 #### Wymiar 2D
+
 #### Wymiar 10D
+
 #### Wymiar 20D
