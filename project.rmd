@@ -33,7 +33,7 @@ Każda funkcja została przetestowana na dwóch algorytmach, a wyniki zostały p
 
 W celu przetestowania algorytmów zostały wybrane dwie funkcje z pakietu `smoof`: funkcja [Rosenbrocka](https://en.wikipedia.org/wiki/Rosenbrock_function) oraz [Rastrigina](https://en.wikipedia.org/wiki/Rastrigin_function).
 Każda funkcja została wygenerowana na trzech różnych wymiarach: 2, 10, 20.
-Obie badane funkcje osiągają minimum [równe 0](https://en.wikipedia.org/wiki/Test_functions_for_optimization#Test_functions_for_single-objective_optimization).
+Obie badane funkcje osiągają globalne minimum [równe 0](https://en.wikipedia.org/wiki/Test_functions_for_optimization#Test_functions_for_single-objective_optimization).
 Dziedziny funkcji, zgodnie z dokumentacją pakietu, wynoszą:
 
 -   Funkcja Rosenbrocka: $x_i \in [-5,10]$ dla $i = 1, 2, \dots, n$
@@ -62,10 +62,10 @@ W celu ułatwienia analizy oraz łatwej zmiany parametrów zostały zdefiniowane
 number_of_calculations <- 50L
 
 loadData <- function(filename) {
-      #' Loads data from file
-      #'
-      #' @param filename Name of the file
-      #' @return Returns data from file, otherwise NULL if file does not exist
+  #' Loads data from file
+  #'
+  #' @param filename Name of the file
+  #' @return Returns data from file, otherwise NULL if file does not exist
 
   if (file.exists(filename)) {
     return(readRDS(filename))
@@ -75,11 +75,11 @@ loadData <- function(filename) {
 }
 
 saveData <- function(data, filename) {
-      #' Saves data to file
-      #'
-      #' @param data Data to save
-      #' @param filename Name of the file
-      #' @return Returns data parameter
+  #' Saves data to file
+  #'
+  #' @param data Data to save
+  #' @param filename Name of the file
+  #' @return Returns data parameter
 
   saveRDS(data, filename)
   return(data)
@@ -94,11 +94,11 @@ Algorytm PRS (Pure Random Search - przeszukiwanie przypadkowe) oparty jest na lo
 
 ```{r}
 prs_algorithm <- function(f, cost = 1000L) {
-      #' Pure Random Search algorithm
-      #'
-      #' @param f Function to minimize (from spoof package)
-      #' @param cost Number of calculations
-      #' @return Returns function value
+  #' Pure Random Search algorithm
+  #'
+  #' @param f Function to minimize (from spoof package)
+  #' @param cost Number of calculations
+  #' @return Returns function value
 
   if (!isSmoofFunction(f)) {
     stop("Function is not from smoof package.")
@@ -161,11 +161,11 @@ Przy korzystaniu z funkcji z tej biblioteki należy funkcję, która ma być min
 
 ```{r}
 ga_algorithm <- function(f, cost = 1000L) {
-    #' Genetic Algorithm
-    #'
-    #' @param f Function to minimize (from spoof package)
-    #' @param cost Number of calculations
-    #' @return Returns function value
+  #' Genetic Algorithm
+  #'
+  #' @param f Function to minimize (from spoof package)
+  #' @param cost Number of calculations
+  #' @return Returns function value
 
   if (!isSmoofFunction(f)) {
     stop("Function is not from smoof package.")
@@ -216,10 +216,16 @@ mean_ga_rastrigin_20D <- mean(ga_rastrigin_20D)
 ## Porównanie średnich wyników algorytmów oraz ich analiza pod kątem położenia i rozproszenia rozkładu
 
 Dla każdej funkcji (oraz jej wymiaru) został przedstawiony histogram oraz wykres pudełkowy wyników algorytmów, w celu
-analizy ich położenia i rozproszenia.
+analizy ich położenia i rozproszenia. Dodatkowo została zdefiniowana funkcja pomocnicza `draw_plots`.
 
 ```{r}
 draw_plots <- function(prs, ga) {
+  #' Draw algorithm results plots
+  #'
+  #' @param prs PRS algorithm results
+  #' @param ga GA algorithm results
+  #' @return Returns nothing, just draws plots
+
   # PRS Algorithm
   hist(prs, col = "yellow", xlab = "Return value of PRS Algorithm")
   boxplot(prs, col = 'yellow', ylab = "Return value of PRS Algorithm", main = "Boxplot of PRS Algorithm")
@@ -281,122 +287,92 @@ draw_plots(prs_rastrigin_20D, ga_rastrigin_20D)
 ## Analiza istotności statystycznej różnicy między wynikami algorytmów
 
 W tej sekcji została przeprowadzona analiza istotności statystycznej różnicy między wynikami algorytmów.
-W tym celu wykorzystano przedziały ufności 95% oraz test dla wartości średniej.
-Ze względu na tą samą oczekiwaną wartość minimum funkcji Rosenbrocka oraz Rastrigina [równą 0](https://en.wikipedia.org/wiki/Test_functions_for_optimization#Test_functions_for_single-objective_optimization),
-test hipotezy zerowej przyjmuje postać: $H_0: m = 0$, gdzie $m$ to wartość przeciętna algorytmu.
-Ze względu na liczbę powtórzeń założono, że rozkład średniej może być sensownie przybliżony przez rozkład normalny $N(m,\sigma)$.
-Ponieważ nie znamy parametru $\sigma$, do wyznaczenia przedziałów ufności wykorzystano statystykę:
+Ze względu na liczbę powtórzeń (w naszym przypadku wykonano algorytm 50 razy) założono,
+że rozkład średniej może być sensownie przybliżony przez rozkład normalny $N(m,\sigma)$.
+W związku z powyższą obserwacją, został wykorzystany [test t-Studenta dla dwóch niezależnych próbek](https://en.wikipedia.org/wiki/Student%27s_t-test#Independent_two-sample_t-test), który miał na celu ocenienie hipotezy
+$H_0: \overline{X_1} = \overline{X_2}$ (średnie wyniki algorytmów są równe) wobec hipotezy alternatywnej $H_1: \overline{X_1} \neq \overline{X_2}$
+dla poziomu istotności $\alpha = 0.05$.
 
-\begin{equation}
-T=\frac{\overline{X} - m}{\frac{s}{\sqrt{n}}}
-\end{equation}
 
-Można pokazać, że
+W tym celu wykorzystano funkcję `run_t.test` opartej na funkcji `t.test`, która jako argumenty przyjmuje ona dwie próbki (wyniki algorytmu PRS i GA), etykiety zestawów danych
+oraz parametr `mu`, który jest równy różnicy między średnimi (w naszym przypadku równy 0).
 
-\begin{equation}
-T \sim t_{n-1}
-\end{equation}
+```{r}
+run_t.test <- function (data_x, data_y, mu=0, alpha=0.05, label_1 = "x", label_2 = "y") {
+  #' Runs t-test on two data sets
+  #'
+  #' @param data_x First data set
+  #' @param data_y Second data set
+  #' @param mu Mean value
+  #' @param alpha Significance level
+  #' @param label_1 Label for first data set
+  #' @param label_2 Label for second data set
+  #' @return Returns t-test result
 
-gdzie $t_{n-1}$ to rozkład $t$ o $n$ stopniach swobody, zwanym też rozkładem Studenta.
+  test <- t.test(data_x, data_y, mu=mu, alternative="two.sided", conf.level=1-alpha)
 
-W tym przypadku przedział ufności dla średniej wynosi:
+  p_value <- test$p.value
+  if (p_value <= alpha) {
+    hypothesis_analysis_result <- "Conclusion: hypothesis is false, because p_value <= alpha"
+  }else{
+    hypothesis_analysis_result <- "Conclusion: not enough information if hypothesis is false, because p_value > alpha"
+  }
 
-\begin{equation}
-[ \overline{X} - t_{n-1} \frac{s}{\sqrt{n}}, \overline{X} + t_{n-1} \frac{s}{\sqrt{n}} ]
-\end{equation}
+  cat(sep = "",
+      "t = ", test$statistic, '\n',
+      "df = ", test$parameter, '\n',
+      "p-value = ", test$p.value, '\n',
+      "hypothesis: true difference in means is equal to ", mu, '\n',
+      "alternative hypothesis: true difference in means is not equal to ", mu, '\n',
+      attr(test$conf.int, "conf.level")*100, " percent confidence interval: [", test$conf.int[1],", ", test$conf.int[2], "]\n",
+      "sample estimates:", '\n',
+      "   mean of ", label_1, " = ", test$estimate[1], '\n',
+      "   mean of ", label_2, " = ", test$estimate[2], '\n',
+      '\n',
+      hypothesis_analysis_result
+  )
+}
+```
 
-Analogicznie dla testu wartości średniej, ponieważ nie znamy parametru $\sigma$, wykorzystamy test Studenta, korzystając ze statystyki $T$.
-Zbiór krytyczny na poziomie istotności $\alpha$ dla dwustronnej hipotezy alternatywnej ma postać:
-
-\begin{equation}
-C = \{t: t \leq -t_{1-\frac{\alpha}{2},n-1} \lor t \geq t_{1-\frac{\alpha}{2},n-1}\}
-\end{equation}
-
-Najmniejszy poziom istotności, przy którym dana wartość prowadzi do odrzucenia hipotezy
-$H_0$, zwany także p-wartością wynosi:
-
-\begin{equation}
-p(t) = 2 \cdot P(T \geq |t| | H_0) = 2 \cdot (1 - F_{n - 1}(|t|))
-\end{equation}
-
-gdzie $F_{n - 1}$ jest dystrybuantą $t_{n-1}$.
 
 ### Funkcja Rosenbrocka
 
 #### Wymiar 2D
 
-Algorytm PRS
 ```{r}
-t.test(prs_rosenbrock_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
+run_t.test(prs_rosenbrock_2D, ga_rosenbrock_2D, label_1 = "PRS algorithm result", label_2 = "GA algorithm result")
 ```
-
-Algorytm GA
-```{r}
-t.test(ga_rosenbrock_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
-```
-
 
 #### Wymiar 10D
 
-Algorytm PRS
-
 ```{r}
-t.test(prs_rosenbrock_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
-```
-Algorytm GA
-
-```{r}
-t.test(ga_rosenbrock_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
+run_t.test(prs_rosenbrock_10D, ga_rosenbrock_10D, label_1 = "PRS algorithm result", label_2 = "GA algorithm result")
 ```
 
 #### Wymiar 20D
 
-Algorytm PRS
-
 ```{r}
-t.test(prs_rosenbrock_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
-```
-Algorytm GA
-
-```{r}
-t.test(ga_rosenbrock_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
+run_t.test(prs_rosenbrock_20D, ga_rosenbrock_20D, label_1 = "PRS algorithm result", label_2 = "GA algorithm result")
 ```
 
 ### Funkcja Rastrigina
 
 #### Wymiar 2D
 
-Algorytm PRS
-
 ```{r}
-t.test(prs_rastrigin_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
-```
-Algorytm GA
-```{r}
-t.test(ga_rastrigin_2D, mu = 0, conf.level = 0.95, alternative = "two.sided")
+run_t.test(prs_rastrigin_2D, ga_rastrigin_2D, label_1 = "PRS algorithm result", label_2 = "GA algorithm result")
 ```
 
 #### Wymiar 10D
 
-Algorytm PRS
 ```{r}
-t.test(prs_rastrigin_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
-```
-Algorytm GA
-
-```{r}
-t.test(ga_rastrigin_10D, mu = 0, conf.level = 0.95, alternative = "two.sided")
+run_t.test(prs_rastrigin_10D, ga_rastrigin_10D, label_1 = "PRS algorithm result", label_2 = "GA algorithm result")
 ```
 
 #### Wymiar 20D
 
-Algorytm PRS
 ```{r}
-t.test(prs_rastrigin_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
-```
-Algorytm GA
-```{r}
-t.test(ga_rastrigin_20D, mu = 0, conf.level = 0.95, alternative = "two.sided")
+run_t.test(prs_rastrigin_20D, ga_rastrigin_20D, label_1 = "PRS algorithm result", label_2 = "GA algorithm result")
 ```
 
 #### Analiza wyników
