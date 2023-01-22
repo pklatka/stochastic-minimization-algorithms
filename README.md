@@ -9,7 +9,7 @@ Project description (in polish):
 >
 > Losujemy po kolei zadaną z góry liczbę punktów z rozkładem jednostajnym w zadanej dziedzinie. Jeżeli dziedzina jest kostką wielowymiarową (tu tak ma być), to można (i trzeba) losować kolejno współrzędne poszczególnych punktów według odpowiedniego jednowymiarowego rozkładu jednostajnego, np. jeśli dziedzina poszukiwania jest kostką trójwymiarową (np. [0,1]×[−2,2]×[100,1000]), to pierwszą współrzędną każdego punktu losujemy z rozkładu U(0,1), drugą z rozkładu U(−2,2), a trzecią z rozkładu U(100,1000). Każdy wylosowany punkt porównujemy z aktualnie zapamiętanym minimum i jeśli wartość minimalizowanej funkcji w tym punkcie jest mniejsza, to ten punkt zapamiętujemy jako aktualny punkt minimalny. Wartość funkcji w ostatnim zapamiętanym punkcie stanowi wynik algorytmu.
 >
-> Algorytm genetyczny (GA)
+> Algorytm genetyczny (GA):
 >
 > Implementacje można znaleźć np. w bibliotekach GA i ecr dostępnych w CRAN. Wynikiem jest najmniejsza znaleziona wartość funkcji.
 >
