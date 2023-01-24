@@ -1,3 +1,5 @@
 project.nb.html
 .idea
 .Rproj.user
+.RData
+.Rhistory

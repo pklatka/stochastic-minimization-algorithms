@@ -3,14 +3,17 @@ title: "Analiza działania algorytmów minimalizacji stochastycznej"
 author:
 - Patryk Klatka
 - Szymon Twardosz
-output: html_notebook
+output: word_document
 editor_options:
 markdown:
 wrap: sentence
 ---
 
 ```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
-# PDF Render: output: pdf_document
+# PDF render: output: pdf_document
+# Word render: output: word_document
+# HTML render: output: html_document
+# Interactive HTML render: output: html_notebook
 
 # NOTE: Use code below if you can't load data files
 # setwd("/path/to/project/directory")
@@ -251,10 +254,10 @@ draw_plots <- function(prs, ga) {
 ```{r}
 draw_plots(prs_rosenbrock_2D, ga_rosenbrock_2D)
 ```
-[Komentarz]
+
 Powyższe wykresy przedstawiają rozkład wyników, jakie uzyskały algorytmy PRS oraz GA dla 50 powtórzeń.
-Z histogramów wywnioskować można, że znaczna część wyników jakie zwróciły algorytmy skupia się blisko wartości 0. Różnicę pomiędzy algorytmami zaobserwować można zwracając uwagę na skalę tych wykresów (Oś X).
-Analizując wykresy pudełkowe wyników algorytmów zauważyć można występowanie wielu outlierów, znajdujących się nad ,,górnym wąsem". Ta sytuacja powtarza się dla dwóch algorytmów.
+Z histogramów wywnioskować można, że znaczna część wyników, jakie zwróciły algorytmy skupia się blisko wartości 0. Różnicę pomiędzy algorytmami zaobserwować można zwracając uwagę na skalę tych wykresów (oś OX).
+Analizując wykresy pudełkowe wyników algorytmów zauważyć można występowanie wielu tzw. outlierów (wartości odstających), znajdujących się nad "górnym wąsem". Ta sytuacja powtarza się dla dwóch algorytmów.
 Szczególnie dobrze widać to na wykresie pudełkowym - pudełko dla Algorytmu GA sprowadza się do prostej.
 
 #### Wymiar 10D
@@ -262,8 +265,8 @@ Szczególnie dobrze widać to na wykresie pudełkowym - pudełko dla Algorytmu G
 ```{r}
 draw_plots(prs_rosenbrock_10D, ga_rosenbrock_10D)
 ```
-[Komentarz]
-W przypadku funkcji 10 - wymiarowych, histogramy wyników działania algorytmów zaczynają się od siebie różnić(w porównaniu z 2 - wymiarowymi funkcjami). Przede wszystkim wykres wyników algorytmu PRS ,,przesunął się" w dodatnią stronę osi OX. Wyniki algorytmu nie są skupione wokół zera ale przedziału [10000, 40000]. Również wykres pudełkowy uległ zmianie. W tym przykładzie nie zaobserwowano żadnych outlierów, za to ,,wąsy" wykresu stały sie znacznie większe i symetryczne. 
+
+W przypadku funkcji 10 - wymiarowych, histogramy wyników działania algorytmów zaczynają się od siebie różnić (w porównaniu z 2 - wymiarowymi funkcjami). Przede wszystkim wykres wyników algorytmu PRS "przesunął się" w dodatnią stronę osi OX. Wyniki algorytmu nie są skupione wokół zera, ale przedziału $[10000, 40000]$. Również wykres pudełkowy uległ zmianie. W tym przykładzie nie zaobserwowano żadnych tzw. outlierów (wartości odstających), za to "wąsy" wykresu stały się znacznie większe i symetryczne.
 Wykresy wyników algorytmu GA zachowały swój kształt (z poprzedniego przykładu).
 
 
@@ -272,9 +275,9 @@ Wykresy wyników algorytmu GA zachowały swój kształt (z poprzedniego przykła
 ```{r}
 draw_plots(prs_rosenbrock_20D, ga_rosenbrock_20D)
 ```
-[Komentarz]
-Powyższe wykresy, przedstawiające wyniki działania algorytmów, różnią się w zależności od wyboru metody stochastycznej optymalizacji. Tak jak poprzednio, rozkład wyników algorytmu PRS nie skupia się blisko zera, ale wokół wartości znacznie większych tj. [2e+05, 4e+05]. Wykres pudełkowy zachował swój kształt z poprzedniego przykładu.
-W tej sytuacji również wykres drugiego algorytmu uległ przesunięciu. Jeszcze w poprzednim przykładzie większość wartości znajdowało się blisko zera. Teraz skupiają się one wokół przedziału [10, 50].
+
+Powyższe wykresy, przedstawiające wyniki działania algorytmów, różnią się w zależności od wyboru metody stochastycznej optymalizacji. Tak jak poprzednio, rozkład wyników algorytmu PRS nie skupia się blisko zera, ale wokół wartości znacznie większych tj. $[2e+05, 4e+05]$. Wykres pudełkowy zachował swój kształt z poprzedniego przykładu.
+W tej sytuacji również wykres drugiego algorytmu uległ przesunięciu. Jeszcze w poprzednim przykładzie większość wartości znajdowała się blisko zera. Teraz skupiają się one wokół przedziału $[10, 50]$.
 Wykres pudełkowy nadal obrazuję podobną sytuację jedynie z przeskalowaną osią OY.
 
 ### Funkcja Rastrigina
@@ -284,17 +287,18 @@ Wykres pudełkowy nadal obrazuję podobną sytuację jedynie z przeskalowaną os
 ```{r}
 draw_plots(prs_rastrigin_2D, ga_rastrigin_2D)
 ```
-[Komentarz]
-Powyższe wykresy przedstawiające wyniki działania algorytmów PRS i GA, różnią się w zależności od wybranej metody optymalizacji stochastycznej. Wartości na wykresie dla algorytmu PRS skupiają się wokół wartości 1, podczas gdy wartości na histogramie algorytmu GA znajdują się bardzo blisko zera. Szczególnie dobrze tę zależność pokazują wykresu pudełkowe, w których ,,pudełko" algorytmu GA redukuje się do prostej.
-Zarówno w wykresie pudełkowym dla algorytmu GA, jak i algorytmu PRS zabserwować można górnych outlierów. Różnicą jest położenie ,,wąsów", które dla wyników metody PRS są symetryczne, a dla metody GA, górny ,,wąs" jest znacznie dłuższy.
+
+Powyższe wykresy przedstawiające wyniki działania algorytmów PRS i GA, różnią się w zależności od wybranej metody optymalizacji stochastycznej. Wartości na wykresie dla algorytmu PRS skupiają się wokół wartości 1, podczas gdy wartości na histogramie algorytmu GA znajdują się bardzo blisko zera. Szczególnie dobrze tę zależność pokazują wykresu pudełkowe, w których "pudełko" algorytmu GA redukuje się do prostej.
+Zarówno w wykresie pudełkowym dla algorytmu GA, jak i algorytmu PRS zabserwować można górnych outlierów. Różnicą jest położenie "wąsów", które dla wyników metody PRS są symetryczne, a dla metody GA, górny "wąs" jest znacznie dłuższy.
 
 #### Wymiar 10D
 
 ```{r}
 draw_plots(prs_rastrigin_10D, ga_rastrigin_10D)
 ```
-Powyższe wykresy różnią się w zależności od wyboru algorytmu optymalizacji stochastycznej. Dla PRS zaobserwować można znacznę przesunięcie danych w dodatnią stronę osi OX. Najwięcej ich znajduje się w przedziale [80, 100]. Dla porównania dane w histogramie algorytmu GA, nadal skupiają blisko 0.
-Wykres pudełkowy dla algorytmu PRS, różni się od tych wygenerowanych w wcześniejszych przykładach. Po raz pierwszy bowiem, zaobserwowano występowanie outlierów dolnych (wcześniej było to tylko outliery górne). Sytuacja ta nie powtarza się dla algorytmu GA, którego wykres pudełkowy przypomina te z wcześniejszych przykładów)
+
+Powyższe wykresy różnią się w zależności od wyboru algorytmu optymalizacji stochastycznej. Dla PRS zaobserwować można znacznę przesunięcie danych w dodatnią stronę osi OX. Najwięcej ich znajduje się w przedziale $[80, 100]$. Dla porównania dane w histogramie algorytmu GA nadal skupiają blisko 0.
+Wykres pudełkowy dla algorytmu PRS różni się od tych wygenerowanych we wcześniejszych przykładach. Po raz pierwszy bowiem zaobserwowano występowanie outlierów dolnych (wcześniej było to tylko outliery górne). Sytuacja ta nie powtarza się dla algorytmu GA, którego wykres pudełkowy przypomina te z wcześniejszych przykładów).
 
 
 #### Wymiar 20D
@@ -302,10 +306,11 @@ Wykres pudełkowy dla algorytmu PRS, różni się od tych wygenerowanych w wcze�
 ```{r}
 draw_plots(prs_rastrigin_20D, ga_rastrigin_20D)
 ```
+
 Powyższe wykresy różnią się w zależności od wyboru metody optymalizacji stochastycznej.
-Wykres algorytmu PRS jest przesunięty w prawą stronę (w dodatnią stronę osi OX). Wartości na wykresie skupiają się wokół przedziału [210,240]. Dodatkowo z analizy wykresu pudełkowego zaobserwować można, iż dane równomiernie rozkładają się na wynikowym przedziale. Nie zaobserwowano również żadnych outlierów.
-W przypadku algorytmu GA dane skupione są bliżej zera. Z analizy wykresu pudełkowego zaobserwowano występowanie wielu outlierów, znajdujących się powyżej górnego ,,wąsa".
-Porównując dwa algorytmy na jednym wykresie pudełkowym, zabserwować można znaczne różnice pomiędzy wynikami. Przedział, na którym skupiają się wyniki algorytmu GA jest tak mały w porównaniu do algorytmy PRS, że redukuje się do prostej.
+Wykres algorytmu PRS jest przesunięty w prawą stronę (w dodatnią stronę osi OX). Wartości na wykresie skupiają się wokół przedziału $[210,240]$. Dodatkowo z analizy wykresu pudełkowego zaobserwować można, iż dane równomiernie rozkładają się na wynikowym przedziale. Nie zaobserwowano również żadnych outlierów.
+W przypadku algorytmu GA dane skupione są bliżej zera. Z analizy wykresu pudełkowego zaobserwowano występowanie wielu outlierów, znajdujących się powyżej górnego "wąsa".
+Porównując dwa algorytmy na jednym wykresie pudełkowym, zabserwować można znaczne różnice pomiędzy wynikami. Przedział, na którym skupiają się wyniki algorytmu GA jest tak mały w porównaniu do algorytmu PRS, że redukuje się do prostej.
 
 ## Analiza istotności statystycznej różnicy między wynikami algorytmów
 
@@ -429,4 +434,4 @@ Szczegółowe informacje dotyczące średnich dla poszczególnych wywołań funk
 | 20     | 226.0245  | 305825.3   |
 
 Dla każdego przykładu (każdej funkcji i wymiaru) zostały wykonane testy statystycznej różnicy pomiędzy wynikami algorytmów. Hipotezą zerową, jaką przyjeliśmy było zdarzenie: Różnica średnich jest równa 0.
-Hipotezą alternatywną natomiast był zdarzenie przeciwne, czyli: Różnica średnich jest różną od 0. Wszystkie wykonane test na podstawie 95% poziomu ufności, obliczajac p - wartość, dały podstawy do ODRZUCENIA hipotezy zerowej. Biorąc to pod uwagę, można stwierdzić, że algorytmy PRS i GA daję statystycznie RÓŻNE wyniki na poziomie ufności 95%
+Hipotezą alternatywną natomiast był zdarzenie przeciwne, czyli: Różnica średnich jest różną od 0. Wszystkie wykonane test na podstawie 95% poziomu ufności, obliczajac p-wartość, dały podstawy do odrzucenia hipotezy zerowej. Biorąc to pod uwagę, można stwierdzić, że algorytmy PRS i GA daję statystycznie różne wyniki na poziomie ufności 95%.
