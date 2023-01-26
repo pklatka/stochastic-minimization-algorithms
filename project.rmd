@@ -3,7 +3,7 @@ title: "Analiza działania algorytmów minimalizacji stochastycznej"
 author:
 - Patryk Klatka
 - Szymon Twardosz
-output: word_document
+output: html_notebook
 editor_options:
 markdown:
 wrap: sentence
@@ -276,7 +276,7 @@ Wykresy wyników algorytmu GA zachowały swój kształt (z poprzedniego przykła
 draw_plots(prs_rosenbrock_20D, ga_rosenbrock_20D)
 ```
 
-Powyższe wykresy, przedstawiające wyniki działania algorytmów, różnią się w zależności od wyboru metody stochastycznej optymalizacji. Tak jak poprzednio, rozkład wyników algorytmu PRS nie skupia się blisko zera, ale wokół wartości znacznie większych tj. $[2e+05, 4e+05]$. Wykres pudełkowy zachował swój kształt z poprzedniego przykładu.
+Powyższe wykresy, przedstawiające wyniki działania algorytmów, różnią się w zależności od wyboru metody stochastycznej optymalizacji. Tak jak poprzednio, rozkład wyników algorytmu PRS nie skupia się blisko zera, ale wokół wartości znacznie większych tj. $[2\times 10^5, 4\times 10^5]$. Wykres pudełkowy zachował swój kształt z poprzedniego przykładu.
 W tej sytuacji również wykres drugiego algorytmu uległ przesunięciu. Jeszcze w poprzednim przykładzie większość wartości znajdowała się blisko zera. Teraz skupiają się one wokół przedziału $[10, 50]$.
 Wykres pudełkowy nadal obrazuję podobną sytuację jedynie z przeskalowaną osią OY.
 
@@ -409,10 +409,10 @@ Algorytm PRS (Pure Random Search) i algorytm genetyczny (GA) działają poprawni
 Obydwa algorytmy dążą do uzyskania minimalnej wartości optymalizowanej funkcji.
 Natomiast lepiej z tym zadaniem radzi sobie algorytm genetyczny.
 
-Dla funkcji 2D (przy budżecie 1000 wywołań) średnia osiągana wartość jest rzędu 10\^-8 (funkcja Rastrigina) lub 10\^-5 (funkcja Rosenbrocka).
-Podczas gdy średnia drugiego algorytmu wynosi aż 1.7 (funkcja Rastrigina) oraz 0,6 (funkcja Rosenbrocka).
+Dla funkcji 2D (przy budżecie 1000 wywołań) średnia osiągana wartość jest rzędu $10^{-8}$ (funkcja Rastrigina) lub $10^{-5}$ (funkcja Rosenbrocka).
+Podczas gdy średnia drugiego algorytmu wynosi aż 1.7 (funkcja Rastrigina) oraz 0.6 (funkcja Rosenbrocka).
 
-Dla większej ilości wymiarów (tj. 10,20) nadal obserwujemy przewagę algorytmu GA nad PRS.
+Dla większej ilości wymiarów (tj. 10, 20) nadal obserwujemy przewagę algorytmu GA nad PRS.
 Tutaj również algorytmy uzyskały lepsze wyniki dla funkcji Rastrigina (różniły się one o rząd/rzędy wielkości) niż dla funkcji Rosenbrocka.
 
 Szczegółowe informacje dotyczące średnich dla poszczególnych wywołań funkcji oraz minimalnej uzyskanej wartości znajdują się poniżej.
