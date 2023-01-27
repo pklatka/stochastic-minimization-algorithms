@@ -247,7 +247,7 @@ draw_plots <- function(prs, ga) {
   func <- c(rep("PRS", length(prs)), rep("GA", length(ga)))
   value <- c(prs, ga)
   data <- data.frame(func, value)
-  boxplot(data$value ~ data$func, col = terrain.colors(4))
+  boxplot(data$value ~ data$func, col = terrain.colors(4), xlab="", ylab="Return value of GA and PRS Algorithm", main="Boxplot of GA and PRS Algorithm")
 }
 ```
 
