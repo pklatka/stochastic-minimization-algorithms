@@ -55,6 +55,10 @@ rastrigin_2D <- makeRastriginFunction(dimensions = 2L)
 rastrigin_10D <- makeRastriginFunction(dimensions = 10L)
 rastrigin_20D <- makeRastriginFunction(dimensions = 20L)
 ```
+![Funkcja Rosenbrocka](./data/Rosenbrock_function.svg)
+
+![Funkcja Rastrigina](./data/Rastrigin_function.png)
+
 
 ## Stałe i funkcje pomocnicze
 
