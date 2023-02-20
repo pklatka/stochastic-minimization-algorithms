@@ -1,7 +1,7 @@
 # Stochastic minimization algorithms
 Final project for probability and statistics course at AGH UST.
 
-Project description (in polish):
+Project description (in Polish):
 
 > Projekt polega na prostym opracowaniu statystycznym wyników porównania działania wybranych algorytmów minimalizacji stochastycznej.
 >
